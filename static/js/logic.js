@@ -3,39 +3,10 @@ var equakeURL = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_w
 
 var tectonicURL = 'https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json'
 
-// GET request to the query URL
+// Perform a GET request to the query URL
 d3.json(equakeURL, function(data) {
     createFeatures(data.features);
 })
-
-
-// three map layers
-function createMap(earthquakes) {
-
-    var satelliteMap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
-        attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-        maxZoom: 18,
-        id: "mapbox.satellite",
-        accessToken: API_KEY
-    });
-
-    var lightMap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
-        attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-        maxZoom: 18,
-        id: "light-v10",
-        accessToken: API_KEY
-      });  
-
-    var darkMap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
-        attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-        maxZoom: 18,
-        id: "dark-v10",
-        accessToken: API_KEY
-    });
-
-
-
-
 
 // create data markers and tooltip
 function createFeatures(earthquakeData) {
@@ -59,7 +30,29 @@ function createFeatures(earthquakeData) {
     createMap(earthquakes);
 };
 
+// create three map layers
+function createMap(earthquakes) {
 
+    var satelliteMap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
+        attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+        maxZoom: 18,
+        id: "mapbox.satellite",
+        accessToken: API_KEY
+    });
+
+    var lightMap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+        attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+        maxZoom: 18,
+        id: "light-v10",
+        accessToken: API_KEY
+      });  
+
+    var darkMap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+        attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+        maxZoom: 18,
+        id: "dark-v10",
+        accessToken: API_KEY
+    });
 
     // Define a baseMaps object to hold our base layers
     var baseMaps = {
@@ -79,15 +72,15 @@ function createFeatures(earthquakeData) {
 
     // create map and default settings
     var myMap = L.map("map", {
-        center: [37.09, -95.71],
-        zoom:5,
+        center: [38, -104],
+        zoom:4,
         layers: [satelliteMap, earthquakes, tectonicplates]
     });
 
     // add tectonic plate data
     d3.json(tectonicURL, function(tectonicData){
         L.geoJSON(tectonicData, {
-            color:"red",
+            color:"Orange",
             weight: 2
         })
         .addTo(tectonicplates);
@@ -116,30 +109,27 @@ function createFeatures(earthquakeData) {
         return div;
     };
     legend.addTo(myMap)
-    
 };
-
-
 
 // assign colors
 function getColor(magnitude) {
     if (magnitude > 5) {
-        return "red"
+        return "#F95F66"
     }
     else if (magnitude > 4) {
-        return "orange"
+        return "#FBA35D"
     }
     else if (magnitude > 3) {
-        return "yellow"
+        return "#FBB72A"
     }
     else if (magnitude > 2) {
-        return "blue"
+        return "#F7DB0F"
     }
     else if (magnitude > 1) {
-        return "green"
+        return "#DCF400"
     }
     else {
-        return "lightgreen"
+        return "#A3F601"
     }
 };
 
